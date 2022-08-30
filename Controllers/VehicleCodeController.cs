@@ -27,6 +27,18 @@ namespace BeenFieldAPI.Controllers
             return this.dbContext.SingleOrDefault<VehicleRecord>("Select * from VehicleRecords where Id = @0", id);
         }
 
+        [HttpGet("vehicleMake")]
+        public List<string> GetDetailsByMake(string vehicleMake)
+        {
+            return this.dbContext.Query<string>("Select concat(VehicleModel,' ',VehicleVariant) from VehicleRecords where VehicleMake = @0", vehicleMake).ToList() ?? new List<string>();
+        }
+
+        [HttpGet("vehicleMake/vehicleModel")]
+        public List<string> GetDetailsByMakeAndModel(string vehicleMake, string vehicleModel)
+        {
+            return this.dbContext.Query<string>("Select concat(VehicleModel,' ',VehicleVariant) from VehicleRecords where VehicleMake = @0", vehicleMake).ToList() ?? new List<string>();
+        }
+
         [HttpPost]
         public int CreateDetail(VehicleRecord vehicle)
         {
