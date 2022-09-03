@@ -24,36 +24,35 @@ namespace BeenFieldAPI.Controllers
                 switch (severity)
                 {
                     case "s1":
-                        otherLabourExpense =  this.dbContext.FirstOrDefault<OtherLabour>("select * from OtherLabour where PanelId IN (select PanelId from OtherLabour where CarBodyPanel = @0)", bodyPart).LowSeverity ?? 0;
+                        otherLabourExpense = this.dbContext.FirstOrDefault<OtherLabourCost>("select * from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).LowSeverity ?? 0;
                         break;
 
                     case "S1":
-                        otherLabourExpense =  this.dbContext.FirstOrDefault<OtherLabour>("select * from OtherLabour where PanelId IN (select PanelId from OtherLabour where CarBodyPanel = @0)", bodyPart).LowSeverity ?? 0;
+                        otherLabourExpense = this.dbContext.FirstOrDefault<OtherLabourCost>("select * from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).LowSeverity ?? 0;
                         break;
 
                     case "S2":
-                        otherLabourExpense =  this.dbContext.FirstOrDefault<OtherLabour>("select * from OtherLabour where PanelId IN (select PanelId from OtherLabour where CarBodyPanel = @0)", bodyPart).MediumSeverity ?? 0;
+                        otherLabourExpense = this.dbContext.FirstOrDefault<OtherLabourCost>("select * from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).MediumSeverity ?? 0;
                         break;
 
                     case "s2":
-                        otherLabourExpense =  this.dbContext.FirstOrDefault<OtherLabour>("select * from OtherLabour where PanelId IN (select PanelId from OtherLabour where CarBodyPanel = @0)", bodyPart).MediumSeverity ?? 0;
+                        otherLabourExpense = this.dbContext.FirstOrDefault<OtherLabourCost>("select * from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).MediumSeverity ?? 0;
                         break;
 
                     case "S3":
-                        otherLabourExpense =  this.dbContext.FirstOrDefault<OtherLabour>("select * from OtherLabour where PanelId IN (select PanelId from OtherLabour where CarBodyPanel = @0)", bodyPart).HighSeverity ?? 0;
+                        otherLabourExpense = this.dbContext.FirstOrDefault<OtherLabourCost>("select * from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).HighSeverity ?? 0;
                         break;
 
                     case "s3":
-                        otherLabourExpense =  this.dbContext.FirstOrDefault<OtherLabour>("select * from OtherLabour where PanelId IN (select PanelId from OtherLabour where CarBodyPanel = @0)", bodyPart).HighSeverity ?? 0;
+                        otherLabourExpense = this.dbContext.FirstOrDefault<OtherLabourCost>("select * from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).HighSeverity ?? 0;
                         break;
 
                     default:
                         return null;
                 }
-
                 return new DamageOne((int)otherLabourExpense);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return null;
             }

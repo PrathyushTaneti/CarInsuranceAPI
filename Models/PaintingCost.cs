@@ -4,14 +4,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BeenFieldAPI.Models
 {
-    public partial class PartsCost
+    public partial class PaintingCost
     {
-        public string? BodyPart { get; set; }
+        public string? PanelDescription { get; set; }
 
         [Key]
         public int Id { get; set; }
         public string? VehicleVariantCode { get; set; }
-
-        public int? Cost { get; set; }
+        public int? Expense { get; set; }
     }
 }

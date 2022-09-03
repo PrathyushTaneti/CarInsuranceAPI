@@ -24,15 +24,15 @@ namespace BeenFieldAPI.Controllers
 
                 string vehicleTypeCode = this.dbContext.FirstOrDefault<VehicleRecord>("Select * from VehicleRecords Where VehicleMake = @0", vehicleMake).VehicleTypeCode ?? "";
 
-                int rrLabourExpense = this.dbContext.FirstOrDefault<RrLabour>("Select * from RrLabour where BodyPart = @0 AND VehicleTypeCode = @1", bodyPart, vehicleTypeCode).Expense ?? 0;
+                int RepairRefitCostExpense = this.dbContext.FirstOrDefault<RepairRefitCost>("Select * from RepairRefitCost where BodyPart = @0 AND VehicleTypeCode = @1", bodyPart, vehicleTypeCode).Expense ?? 0;
 
-                int paintingExpense = this.dbContext.FirstOrDefault<PaintingLabour>("Select * from PaintingLabour where PanelDescription = @0 AND VehicleVariantCode = @1", panelDescription, vehicleVariantCode).Expense ?? 0;
+                int paintingExpense = this.dbContext.FirstOrDefault<PaintingCost>("Select * from PaintingCost where PanelDescription = @0 AND VehicleVariantCode = @1", panelDescription, vehicleVariantCode).Expense ?? 0;
 
                 int newBodyPartsExpense = this.dbContext.FirstOrDefault<PartsCost>("Select * from PartsCost where BodyPart = @0 AND VehicleVariantCode = @1", bodyPart, vehicleVariantCode).Cost ?? 0;
 
-                return new DamageThree(rrLabourExpense, paintingExpense, newBodyPartsExpense);
+                return new DamageThree(RepairRefitCostExpense, paintingExpense, newBodyPartsExpense);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return null;
             }

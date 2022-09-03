@@ -16,11 +16,11 @@ namespace BeenFieldAPI.Models
         {
         }
 
-        public virtual DbSet<CustomerTable> CustomerTables { get; set; } = null!;
-        public virtual DbSet<OtherLabour> OtherLabours { get; set; } = null!;
-        public virtual DbSet<PaintingLabour> PaintingLabours { get; set; } = null!;
+        public virtual DbSet<CustomerRecord> CustomerRecords { get; set; } = null!;
+        public virtual DbSet<OtherLabourCost> OtherLabourCosts { get; set; } = null!;
+        public virtual DbSet<PaintingCost> PaintingCosts { get; set; } = null!;
         public virtual DbSet<PartsCost> PartsCosts { get; set; } = null!;
-        public virtual DbSet<RrLabour> RrLabours { get; set; } = null!;
+        public virtual DbSet<RepairRefitCost> RepairRefitCosts { get; set; } = null!;
         public virtual DbSet<VehicleRecord> VehicleRecords { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -33,9 +33,9 @@ namespace BeenFieldAPI.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CustomerTable>(entity =>
+            modelBuilder.Entity<CustomerRecord>(entity =>
             {
-                entity.ToTable("CustomerTable");
+                entity.Property(e => e.Id).HasColumnName("Id");
 
                 entity.Property(e => e.Address)
                     .HasMaxLength(200)
@@ -46,79 +46,50 @@ namespace BeenFieldAPI.Models
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<OtherLabour>(entity =>
+            modelBuilder.Entity<OtherLabourCost>(entity =>
             {
-                entity.ToTable("OtherLabour");
+                entity.ToTable("OtherLabourCost");
+
+                entity.Property(e => e.Id).HasColumnName("Id");
 
                 entity.Property(e => e.CarBodyPanel).HasMaxLength(255);
             });
 
-            modelBuilder.Entity<PaintingLabour>(entity =>
+            modelBuilder.Entity<PaintingCost>(entity =>
             {
-                entity.ToTable("PaintingLabour");
+                entity.ToTable("PaintingCost");
 
-               entity.Property(e => e.PanelDescription).HasMaxLength(255);
+                entity.Property(e => e.PanelDescription).HasMaxLength(255);
 
-                entity.Property(e => e.VehicleVariantCode).HasMaxLength(10);
-
-                entity.Property(e => e.Expense);                             
-
-               
+                entity.Property(e => e.VehicleVariantCode)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<PartsCost>(entity =>
             {
                 entity.ToTable("PartsCost");
 
-                entity.Property(e => e.Alto800Lxi).HasColumnName("Alto800LXI");
-
-                entity.Property(e => e.Alto800Std).HasColumnName("Alto800STD");
-
-                entity.Property(e => e.Alto800Vxi).HasColumnName("Alto800VXI");
-
-                entity.Property(e => e.AltoK10lx).HasColumnName("AltoK10LX");
-
-                entity.Property(e => e.AltoK10lxi).HasColumnName("AltoK10LXI");
-
-                entity.Property(e => e.AltoK10vsi).HasColumnName("AltoK10VSI");
-
-                entity.Property(e => e.AltoK10vxi).HasColumnName("AltoK10VXI ");
-
                 entity.Property(e => e.BodyPart).HasMaxLength(255);
 
-                entity.Property(e => e.SwiftDzireLxi).HasColumnName("SwiftDzireLXI");
-
-                entity.Property(e => e.SwiftDzireVxi).HasColumnName("SwiftDzireVXI");
-
-                entity.Property(e => e.SwiftDzireZxi).HasColumnName("SwiftDzireZXI");
-
-                entity.Property(e => e.SwiftLxi).HasColumnName("SwiftLXI");
-
-                entity.Property(e => e.SwiftVxi).HasColumnName("SwiftVXI");
-
-                entity.Property(e => e.SwiftZxi).HasColumnName("SwiftZXI");
-
-                entity.Property(e => e.WagonRlxi).HasColumnName("WagonRLXI");
-
-                entity.Property(e => e.WagonRvxi).HasColumnName("WagonRVXI");
-
-                entity.Property(e => e.WagonRzxi).HasColumnName("WagonRZXI");
-
-                entity.Property(e => e.VehicleVariantCode).HasMaxLength(255);
-
+                entity.Property(e => e.VehicleVariantCode)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
             });
 
-            modelBuilder.Entity<RrLabour>(entity =>
+            modelBuilder.Entity<RepairRefitCost>(entity =>
             {
-                entity.ToTable("RrLabour");
+                entity.ToTable("RepairRefitCost");
 
                 entity.Property(e => e.BodyPart).HasMaxLength(255);
 
+                entity.Property(e => e.VehicleTypeCode)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<VehicleRecord>(entity =>
             {
-                entity.ToTable("VehicleRecord");
                 entity.Property(e => e.VehicleMake)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -135,6 +106,10 @@ namespace BeenFieldAPI.Models
                     .HasMaxLength(6)
                     .IsUnicode(false);
 
+                entity.Property(e => e.VehicleTypeCode)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.VehicleVariant)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -142,11 +117,8 @@ namespace BeenFieldAPI.Models
                 entity.Property(e => e.VehicleVariantCode)
                     .HasMaxLength(8)
                     .IsUnicode(false);
-
-                entity.Property(e => e.VehicleTypeCode)
-                  .HasMaxLength(8)
-                  .IsUnicode(false);
             });
+
             OnModelCreatingPartial(modelBuilder);
         }
 

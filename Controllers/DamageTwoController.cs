@@ -20,55 +20,51 @@ namespace BeenFieldAPI.Controllers
         {
             try
             {
-                string vehicleTypeCode =  this.dbContext.FirstOrDefault<VehicleRecord>("Select * from VehicleRecords where VehicleMake = @0", vehicleMake).VehicleTypeCode ?? "";
+                string vehicleTypeCode = this.dbContext.FirstOrDefault<VehicleRecord>("Select * from VehicleRecords where VehicleMake = @0", vehicleMake).VehicleTypeCode ?? "";
                 string vehicleVariantCode = this.dbContext.FirstOrDefault<VehicleRecord>("Select * from VehicleRecords where VehicleMake = @0 AND VehicleModel = @1 AND VehicleVariant = @2", vehicleMake, vehicleModel, vehicleVariant).VehicleVariantCode ?? "";
-                int rRLabourCost = 0;
-                int paintingCost  = 0;
+                int RepairRefitCostCost = 0;
+                int paintingCost = 0;
                 if (vehicleTypeCode != "" && vehicleVariantCode != "")
                 {
-                    rRLabourCost =  this.dbContext.SingleOrDefault<RrLabour>("Select * from RrLabour where BodyPart = @0 AND VehicleTypeCode = @1",bodyPart, vehicleTypeCode).Expense ?? 0;
-                    paintingCost = this.dbContext.SingleOrDefault<PaintingLabour>("Select * from PaintingLabour where PanelDescription = @0 AND VehicleVariantCode = @1", panelDescription, vehicleVariantCode).Expense ?? 0;
+                    RepairRefitCostCost = this.dbContext.SingleOrDefault<RepairRefitCost>("Select * from RepairRefitCost where BodyPart = @0 AND VehicleTypeCode = @1", bodyPart, vehicleTypeCode).Expense ?? 0;
+                    paintingCost = this.dbContext.SingleOrDefault<PaintingCost>("Select * from PaintingCost where PanelDescription = @0 AND VehicleVariantCode = @1", panelDescription, vehicleVariantCode).Expense ?? 0;
                 }
 
-                double otherLabourCost = 0;
+                double OtherLabourCostCost = 0;
                 switch (severity)
                 {
                     case "s1":
-                        otherLabourCost = this.dbContext.FirstOrDefault<OtherLabour>("select LowSeverity from OtherLabour where PanelId IN (select PanelId from OtherLabour where CarBodyPanel = @0)", bodyPart).LowSeverity ?? 0;
+                        OtherLabourCostCost = this.dbContext.FirstOrDefault<OtherLabourCost>("select LowSeverity from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).LowSeverity ?? 0;
                         break;
 
                     case "S1":
-                        otherLabourCost = this.dbContext.FirstOrDefault<OtherLabour>("select LowSeverity from OtherLabour where PanelId IN (select PanelId from OtherLabour where CarBodyPanel = @0)", bodyPart).LowSeverity ?? 0;
+                        OtherLabourCostCost = this.dbContext.FirstOrDefault<OtherLabourCost>("select LowSeverity from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).LowSeverity ?? 0;
                         break;
 
                     case "S2":
-                        otherLabourCost = this.dbContext.FirstOrDefault<OtherLabour>("select MediumSeverity from OtherLabour where PanelId IN (select PanelId from OtherLabour where CarBodyPanel = @0)", bodyPart).MediumSeverity ?? 0;
+                        OtherLabourCostCost = this.dbContext.FirstOrDefault<OtherLabourCost>("select MediumSeverity from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).MediumSeverity ?? 0;
                         break;
 
                     case "s2":
-                        otherLabourCost = this.dbContext.FirstOrDefault<OtherLabour>("select MediumSeverity from OtherLabour where PanelId IN (select PanelId from OtherLabour where CarBodyPanel = @0)", bodyPart).MediumSeverity ?? 0;
+                        OtherLabourCostCost = this.dbContext.FirstOrDefault<OtherLabourCost>("select MediumSeverity from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).MediumSeverity ?? 0;
                         break;
 
                     case "S3":
-                        otherLabourCost = this.dbContext.FirstOrDefault<OtherLabour>("select HighSeverity from OtherLabour where PanelId IN (select PanelId from OtherLabour where CarBodyPanel = @0)", bodyPart).HighSeverity ?? 0;
+                        OtherLabourCostCost = this.dbContext.FirstOrDefault<OtherLabourCost>("select HighSeverity from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).HighSeverity ?? 0;
                         break;
 
                     case "s3":
-                        otherLabourCost = this.dbContext.FirstOrDefault<OtherLabour>("select HighSeverity from OtherLabour where PanelId IN (select PanelId from OtherLabour where CarBodyPanel = @0)", bodyPart).HighSeverity ?? 0;
+                        OtherLabourCostCost = this.dbContext.FirstOrDefault<OtherLabourCost>("select HighSeverity from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).HighSeverity ?? 0;
                         break;
 
                     default:
-                        otherLabourCost = 0;
+                        OtherLabourCostCost = 0;
                         break;
                 }
-
-                /*return "Labour Expense : " + otherLabourCost.ToString() + "\nRepair Expense : " + rRLabourCost.ToString() + "\nPainting Expense : " + paintingCost.ToString() + "\nTotal Cost  : "+(otherLabourCost + rRLabourCost + paintingCost).ToString();*/
-                return new DamageTwo((int)otherLabourCost, paintingCost, rRLabourCost);
+                return new DamageTwo((int)OtherLabourCostCost, paintingCost, RepairRefitCostCost);
             }
             catch (Exception e)
-            {
-               /* return -1;*/
-                /* return 0;*/
+            { 
                 return null;
             }
             return null;
