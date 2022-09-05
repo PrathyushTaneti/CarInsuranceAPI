@@ -2,8 +2,8 @@
 {
     public class DamageOne
     {
-        public int LabourExpense { get; set; }
-        public DamageOne(int labourExpense)
+        public double LabourExpense { get; set; }
+        public DamageOne(double labourExpense)
         {
             this.LabourExpense = labourExpense;
         }

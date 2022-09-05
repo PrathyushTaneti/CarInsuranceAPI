@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PetaPoco;
+using System.Data.SqlClient;
 
 namespace BeenFieldAPI.Controllers
 {
@@ -20,54 +21,21 @@ namespace BeenFieldAPI.Controllers
         {
             try
             {
-                string vehicleTypeCode = this.dbContext.FirstOrDefault<VehicleRecord>("Select * from VehicleRecords where VehicleMake = @0", vehicleMake).VehicleTypeCode ?? "";
-                string vehicleVariantCode = this.dbContext.FirstOrDefault<VehicleRecord>("Select * from VehicleRecords where VehicleMake = @0 AND VehicleModel = @1 AND VehicleVariant = @2", vehicleMake, vehicleModel, vehicleVariant).VehicleVariantCode ?? "";
-                int RepairRefitCostCost = 0;
-                int paintingCost = 0;
-                if (vehicleTypeCode != "" && vehicleVariantCode != "")
-                {
-                    RepairRefitCostCost = this.dbContext.SingleOrDefault<RepairRefitCost>("Select * from RepairRefitCost where BodyPart = @0 AND VehicleTypeCode = @1", bodyPart, vehicleTypeCode).Expense ?? 0;
-                    paintingCost = this.dbContext.SingleOrDefault<PaintingCost>("Select * from PaintingCost where PanelDescription = @0 AND VehicleVariantCode = @1", panelDescription, vehicleVariantCode).Expense ?? 0;
-                }
+               List<double> otherLabourCostList = this.dbContext.Fetch<double>("; exec OtherLabourCostEstimation @@Severity = @0 , @@CarBodyPanel = @1", severity, bodyPart) ?? new List<double>();
 
-                double OtherLabourCostCost = 0;
-                switch (severity)
-                {
-                    case "s1":
-                        OtherLabourCostCost = this.dbContext.FirstOrDefault<OtherLabourCost>("select LowSeverity from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).LowSeverity ?? 0;
-                        break;
+                List<double> repairAndRefitCostList = this.dbContext.Fetch<double>("; exec RepairRefitCostEstimation @@VehicleMake = @0, @@VehicleModel = @1, @@BodyPart = @2;", vehicleMake, vehicleModel, bodyPart) ?? new List<double>();
 
-                    case "S1":
-                        OtherLabourCostCost = this.dbContext.FirstOrDefault<OtherLabourCost>("select LowSeverity from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).LowSeverity ?? 0;
-                        break;
+                List<double> paintingCostList = this.dbContext.Fetch<double>("; exec PaintingCostEstimation @@VehicleMake = @0, @@VehicleModel = @1, @@VehicleVariant = @2 ,@@PanelDescription = @3;", vehicleMake, vehicleModel, vehicleVariant, panelDescription) ?? new List<double>();
 
-                    case "S2":
-                        OtherLabourCostCost = this.dbContext.FirstOrDefault<OtherLabourCost>("select MediumSeverity from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).MediumSeverity ?? 0;
-                        break;
-
-                    case "s2":
-                        OtherLabourCostCost = this.dbContext.FirstOrDefault<OtherLabourCost>("select MediumSeverity from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).MediumSeverity ?? 0;
-                        break;
-
-                    case "S3":
-                        OtherLabourCostCost = this.dbContext.FirstOrDefault<OtherLabourCost>("select HighSeverity from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).HighSeverity ?? 0;
-                        break;
-
-                    case "s3":
-                        OtherLabourCostCost = this.dbContext.FirstOrDefault<OtherLabourCost>("select HighSeverity from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).HighSeverity ?? 0;
-                        break;
-
-                    default:
-                        OtherLabourCostCost = 0;
-                        break;
-                }
-                return new DamageTwo((int)OtherLabourCostCost, paintingCost, RepairRefitCostCost);
+                double otherLabourCost = (otherLabourCostList.ToArray().Length != 0) ? otherLabourCostList.ToArray()[0] : 0;
+                double repairAndRefitCost = (repairAndRefitCostList.ToArray().Length != 0) ? repairAndRefitCostList.ToArray()[0] : 0;
+                double paintingCost = (paintingCostList.ToArray().Length != 0) ? paintingCostList.ToArray()[0] : 0;
+                return new DamageTwo(otherLabourCost, repairAndRefitCost, paintingCost);
             }
             catch (Exception e)
             { 
-                return null;
+                return new DamageTwo(-1,-1,-1);
             }
-            return null;
         }
     }
 }

@@ -20,43 +20,14 @@ namespace BeenFieldAPI.Controllers
         {
             try
             {
-                double otherLabourExpense = 0;
-                switch (severity)
-                {
-                    case "s1":
-                        otherLabourExpense = this.dbContext.FirstOrDefault<OtherLabourCost>("select * from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).LowSeverity ?? 0;
-                        break;
-
-                    case "S1":
-                        otherLabourExpense = this.dbContext.FirstOrDefault<OtherLabourCost>("select * from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).LowSeverity ?? 0;
-                        break;
-
-                    case "S2":
-                        otherLabourExpense = this.dbContext.FirstOrDefault<OtherLabourCost>("select * from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).MediumSeverity ?? 0;
-                        break;
-
-                    case "s2":
-                        otherLabourExpense = this.dbContext.FirstOrDefault<OtherLabourCost>("select * from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).MediumSeverity ?? 0;
-                        break;
-
-                    case "S3":
-                        otherLabourExpense = this.dbContext.FirstOrDefault<OtherLabourCost>("select * from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).HighSeverity ?? 0;
-                        break;
-
-                    case "s3":
-                        otherLabourExpense = this.dbContext.FirstOrDefault<OtherLabourCost>("select * from OtherLabourCost where PanelId IN (select PanelId from OtherLabourCost where CarBodyPanel = @0)", bodyPart).HighSeverity ?? 0;
-                        break;
-
-                    default:
-                        return null;
-                }
-                return new DamageOne((int)otherLabourExpense);
+                List<double> otherLabourCostList = this.dbContext.Fetch<double>("; exec OtherLabourCostEstimation @@Severity = @0 , @@CarBodyPanel = @1", severity, bodyPart) ?? new List<double>();
+                double otherLabourExpense = (otherLabourCostList.ToArray().Length != 0) ? otherLabourCostList.ToArray()[0] : 0; 
+                return new DamageOne(otherLabourExpense);
             }
             catch (Exception e)
             {
-                return null;
+                return new DamageOne(-1);
             }
-            return null;
         }
     }
 }

@@ -19,24 +19,23 @@ namespace BeenFieldAPI.Controllers
         public DamageThree Get(string vehicleMake, string vehicleModel, string vehicleVariant, string bodyPart, string panelDescription)
         {
             try
-            {
-                string vehicleVariantCode = this.dbContext.FirstOrDefault<VehicleRecord>("Select * from VehicleRecords Where VehicleMake = @0 AND VehicleModel = @1 AND VehicleVariant = @2", vehicleMake, vehicleModel, vehicleVariant).VehicleVariantCode ?? "";
+            { 
+                List<double> repairAndRefitCostList = this.dbContext.Fetch<double>("; exec RepairRefitCostEstimation @@VehicleMake = @0, @@VehicleModel = @1, @@BodyPart = @2;", vehicleMake, vehicleModel, bodyPart) ?? new List<double>();
 
-                string vehicleTypeCode = this.dbContext.FirstOrDefault<VehicleRecord>("Select * from VehicleRecords Where VehicleMake = @0", vehicleMake).VehicleTypeCode ?? "";
+                List<double> paintingCostList = this.dbContext.Fetch<double>("; exec PaintingCostEstimation @@VehicleMake = @0, @@VehicleModel = @1, @@VehicleVariant = @2 ,@@PanelDescription = @3;", vehicleMake, vehicleModel, vehicleVariant, panelDescription) ?? new List<double>();
 
-                int RepairRefitCostExpense = this.dbContext.FirstOrDefault<RepairRefitCost>("Select * from RepairRefitCost where BodyPart = @0 AND VehicleTypeCode = @1", bodyPart, vehicleTypeCode).Expense ?? 0;
+                List<double> partsCostList = this.dbContext.Fetch<double>("; exec PartsCostEstimation @@BodyPart = @0 , @@VehicleMake = @1 ,@@VehicleModel = @2 , @@VehicleVariant = @3;", bodyPart, vehicleMake, vehicleModel, vehicleVariant) ?? new List<double>();
 
-                int paintingExpense = this.dbContext.FirstOrDefault<PaintingCost>("Select * from PaintingCost where PanelDescription = @0 AND VehicleVariantCode = @1", panelDescription, vehicleVariantCode).Expense ?? 0;
+                double repairAndRefitCost = (repairAndRefitCostList.ToArray().Length != 0) ? repairAndRefitCostList.ToArray()[0] : 0;
+                double paintingCost = (paintingCostList.ToArray().Length != 0) ? paintingCostList.ToArray()[0] : 0;
+                double partsCost = (partsCostList.ToArray().Length != 0) ? partsCostList.ToArray()[0] : 0;
 
-                int newBodyPartsExpense = this.dbContext.FirstOrDefault<PartsCost>("Select * from PartsCost where BodyPart = @0 AND VehicleVariantCode = @1", bodyPart, vehicleVariantCode).Cost ?? 0;
-
-                return new DamageThree(RepairRefitCostExpense, paintingExpense, newBodyPartsExpense);
+                return new DamageThree(repairAndRefitCost, paintingCost, partsCost);
             }
             catch (Exception e)
             {
-                return null;
+                return new DamageThree(-1,-1,-1);
             }
-            return null;
         }
     }
 }

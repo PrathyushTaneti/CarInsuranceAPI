@@ -2,17 +2,17 @@
 {
     public class DamageTwo
     {
-        public int LabourExpense { get; set; }
+        public double LabourCost { get; set; }
 
-        public int RepairExpense { get; set; }
+        public double RepairAndRefitCost { get; set; }
 
-        public int PaintingExpense { get; set; }
+        public double PaintingCost { get; set; }
 
-        public DamageTwo(int labourCost, int repairExpense, int damageExpense)
+        public DamageTwo(double labourCost, double repairRefitCost, double paintingCost)
         {
-            this.LabourExpense = labourCost;
-            this.RepairExpense = repairExpense;
-            this.PaintingExpense = damageExpense;
+            this.LabourCost = labourCost;
+            this.RepairAndRefitCost= repairRefitCost;
+            this.PaintingCost = paintingCost;
         }
     }
 }
