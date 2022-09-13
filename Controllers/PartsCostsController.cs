@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BeenFieldAPI.Models;
 using PetaPoco;
+using BeenFieldAPI.DTOClasses;
 
 namespace BeenFieldAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("API/[controller]")]
     public class PartsCostsController : ControllerBase
     {
         private readonly IDatabase dbContext;
@@ -21,7 +22,6 @@ namespace BeenFieldAPI.Controllers
             dbContext = new Database("Server = .\\SQLEXPRESS; " + "Database = EstimationModelDb; Trusted_Connection = True; " + "TrustServerCertificate = True; ", "System.Data.SqlClient");
         }
 
-        // GET: api/PartsCosts
         [HttpGet]
         public List<PartsCost> GetPartsCosts()
         {
@@ -35,8 +35,27 @@ namespace BeenFieldAPI.Controllers
             }
         }
 
-        // GET: api/PartsCosts/5
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("GetPartsId")]
+        public List<PartsCostUtil> Get()
+        {
+            try
+            {
+                List<PartsCostUtil> partsCost = new List<PartsCostUtil>();
+                foreach(PartsCost part in this.dbContext.Query<PartsCost>("select distinct BodyPart, BodyPartId from PartsCost").ToList() ?? new List<PartsCost>())
+                {
+                    partsCost.Add(new PartsCostUtil(part.BodyPart!, part.BodyPartId!));
+                }
+                return partsCost;
+            }
+            catch(Exception e)
+            {
+                return new List<PartsCostUtil>();
+            }
+        }
+
+        [HttpGet]
+        [Route("{id}")]
         public PartsCost GetPartsCost(int id)
         {
             try
@@ -49,8 +68,8 @@ namespace BeenFieldAPI.Controllers
             }
         }
 
-        // PUT: api/PartsCosts/5
-        [HttpPut("{id}")]
+        [HttpPut]
+        [Route("{id}")]
         public bool PutPartsCost(int id, PartsCost partsCost)
         {
             if (id == partsCost.Id)
@@ -68,7 +87,6 @@ namespace BeenFieldAPI.Controllers
             return false;
         }
 
-        // POST: api/PartsCosts
         [HttpPost]
         public int PostPartsCost(PartsCost partsCost)
         {
@@ -87,8 +105,8 @@ namespace BeenFieldAPI.Controllers
             return -1;
         }
 
-        // DELETE: api/PartsCosts/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("{id}")]
         public bool DeletePartsCost(int id)
         {
             if (this.GetPartsCost(id) != null)

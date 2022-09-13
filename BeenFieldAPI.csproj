@@ -27,6 +27,9 @@
     <PackageReference Include="PetaPoco.Compiled" Version="6.0.524" />
     <PackageReference Include="SimpleInjector" Version="5.4.0" />
     <PackageReference Include="SimpleInjector.Integration.AspNetCore" Version="5.4.0" />
+    <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc.Core" Version="5.4.0" />
+    <PackageReference Include="SimpleInjector.Integration.Web" Version="5.0.0" />
+    <PackageReference Include="SimpleInjector.Integration.Web.Mvc" Version="5.0.0" />
     <PackageReference Include="SimpleInjector.Integration.WebApi" Version="5.0.0" />
     <PackageReference Include="SqlClient.CommandManager" Version="1.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />

@@ -10,8 +10,8 @@ using PetaPoco;
 
 namespace BeenFieldAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("API/[controller]")]
     public class RepairRefitCostsController : ControllerBase
     {
         private readonly IDatabase dbContext;
@@ -21,7 +21,6 @@ namespace BeenFieldAPI.Controllers
             dbContext = new Database("Server = .\\SQLEXPRESS; " + "Database = EstimationModelDb; Trusted_Connection = True; " + "TrustServerCertificate = True; ", "System.Data.SqlClient");
         }
 
-        // GET: api/RepairRefitCosts
         [HttpGet]
         public List<RepairRefitCost> GetRepairRefitCosts()
         {
@@ -35,8 +34,8 @@ namespace BeenFieldAPI.Controllers
             }
         }
 
-        // GET: api/RepairRefitCosts/5
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("{id}")]
         public RepairRefitCost GetRepairRefitCost(int id)
         {
             try
@@ -49,8 +48,8 @@ namespace BeenFieldAPI.Controllers
             }
         }
 
-        // PUT: api/RepairRefitCosts/5
-        [HttpPut("{id}")]
+        [HttpPut]
+        [Route("{id}")]
         public bool PutRepairRefitCost(int id, RepairRefitCost repairRefitCost)
         {
             if (id == repairRefitCost.Id)
@@ -68,7 +67,6 @@ namespace BeenFieldAPI.Controllers
             return false;
         }
 
-        // POST: api/RepairRefitCosts
         [HttpPost]
         public int PostRepairRefitCost(RepairRefitCost repairRefitCost)
         {
@@ -87,8 +85,8 @@ namespace BeenFieldAPI.Controllers
             return -1;
         }
 
-        // DELETE: api/RepairRefitCosts/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("{id}")]
         public bool DeleteRepairRefitCost(int id)
         {
             if (this.GetRepairRefitCost(id) != null)

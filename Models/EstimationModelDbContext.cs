@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using BeenFieldAPI.Models;
 
 namespace BeenFieldAPI.Models
 {
@@ -123,5 +124,9 @@ namespace BeenFieldAPI.Models
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+        public DbSet<BeenFieldAPI.Models.CityCodes>? CityCodes { get; set; }
+
+        public DbSet<BeenFieldAPI.Models.SeverityLevel>? SeverityLevel { get; set; }
     }
 }

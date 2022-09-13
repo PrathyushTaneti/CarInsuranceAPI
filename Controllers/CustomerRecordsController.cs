@@ -7,103 +7,51 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BeenFieldAPI.Models;
 using PetaPoco;
+using BeenFieldAPI.Services.ServiceInterfaces;
 
 namespace BeenFieldAPI.Controllers
-{
-    [Route("api/[controller]")]
+{    
     [ApiController]
+    [Route("API/[controller]")]
     public class CustomerRecordsController : ControllerBase
     {
-        private readonly IDatabase dbContext;
-
-        public CustomerRecordsController(EstimationModelDbContext context)
+        private readonly ICustomerRecords customerRecords;
+        public CustomerRecordsController(ICustomerRecords customerRecords)
         {
-            this.dbContext = new Database("Server = .\\SQLEXPRESS; " + "Database = EstimationModelDb; Trusted_Connection = True; " + "TrustServerCertificate = True; ", "System.Data.SqlClient");
+            this.customerRecords = customerRecords;
         }
 
-        // GET: api/CustomerRecords
         [HttpGet]
         public List<CustomerRecord> GetCustomerRecords()
         {
-            try
-            {
-                return this.dbContext.Query<CustomerRecord>("select * from CustomerRecords").ToList() ?? new List<CustomerRecord>();
-            }
-            catch(Exception e)
-            {
-                return new List<CustomerRecord>();
-            }
+            return this.customerRecords.GetAllCustomerRecords();
         }
 
-        // GET: api/CustomerRecords/5
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("{id}")]
         public CustomerRecord GetCustomerRecord(int id)
         {
-            try
-            {
-                return this.dbContext.SingleOrDefault<CustomerRecord>("Select * from CustomerRecords where Id = @0", id);
-            }
-            catch(Exception e)
-            {
-                return null;
-            }
+            return this.customerRecords.GetRecordById(id);
         }
 
-        // PUT: api/CustomerRecords/5
-        [HttpPut("{id}")]
+        [HttpPut]
+        [Route("{id}")]
         public bool PutCustomerRecord(int id, CustomerRecord customerRecord)
         {
-            if (id == customerRecord.Id)
-            {
-                try
-                {
-                    this.dbContext.Update(customerRecord);
-                    return true;
-                }
-                catch(Exception e)
-                {
-                    return false;
-                }
-            }
-            return false;
+            return this.customerRecords.UpdateRecord(id, customerRecord);
         }
 
-        // POST: api/CustomerRecords
         [HttpPost]
         public int PostCustomerRecord(CustomerRecord customerRecord)
         {
-            if (customerRecord != null)
-            {
-                try
-                {
-                    this.dbContext.Insert(customerRecord);
-                    return customerRecord.Id;
-                }
-                catch (Exception e)
-                {
-                    return -1;
-                }
-            }
-            return -1;
+            return this.customerRecords.CreateNewDetail(customerRecord);
         }
 
-        // DELETE: api/CustomerRecords/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("{id}")]
         public bool DeleteCustomerRecord(int id)
         {
-            if (this.GetCustomerRecord(id) != null)
-            {
-                try
-                {
-                    this.dbContext.Delete(id);
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    return false;
-                }
-            }
-            return false;
+            return this.customerRecords.DeleteRecord(id);
         }
     }
 }

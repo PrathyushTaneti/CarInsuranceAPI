@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BeenFieldAPI.Models;
 using PetaPoco;
+using BeenFieldAPI.DTOClasses;
 
 namespace BeenFieldAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("API/[controller]")]
     public class PaintingCostsController : ControllerBase
     {
         private readonly IDatabase dbContext;
@@ -21,7 +22,6 @@ namespace BeenFieldAPI.Controllers
             dbContext = new Database("Server = .\\SQLEXPRESS; " + "Database = EstimationModelDb; Trusted_Connection = True; " + "TrustServerCertificate = True; ", "System.Data.SqlClient");
         }
 
-        // GET: api/PaintingCosts
         [HttpGet]
         public List<PaintingCost> GetPaintingCosts()
         {
@@ -29,14 +29,33 @@ namespace BeenFieldAPI.Controllers
             {
                 return this.dbContext.Query<PaintingCost>("Select * from PaintingCost").ToList() ?? new List<PaintingCost>();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new List<PaintingCost>();
             }
         }
 
-        // GET: api/PaintingCosts/5
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("GetPaintingCodes")]
+        public List<PaintCodesDTO> Get()
+        {
+            try
+            {
+                List<PaintCodesDTO> paintCodeList = new List<PaintCodesDTO>();
+                foreach(PaintingCost paint in this.dbContext.Query<PaintingCost>("select distinct Paint,PaintId from PaintingCost order by PaintId;").ToList())
+                {
+                    paintCodeList.Add(new PaintCodesDTO(paint));
+                }
+                return paintCodeList;
+            }
+            catch(Exception e)
+            {
+                return new List<PaintCodesDTO>();
+            }
+        }
+
+        [HttpGet]
+        [Route("{id}")]
         public PaintingCost GetPaintingCost(int id)
         {
             try
@@ -49,8 +68,8 @@ namespace BeenFieldAPI.Controllers
             }
         }
 
-        // PUT: api/PaintingCosts/5
-        [HttpPut("{id}")]
+        [HttpPut]
+        [Route("{id}")]
         public bool PutPaintingCost(int id, PaintingCost paintingCost)
         {
             if (id == paintingCost.Id)
@@ -68,7 +87,6 @@ namespace BeenFieldAPI.Controllers
             return false;
         }
 
-        // POST: api/PaintingCosts
         [HttpPost]
         public int PostPaintingCost(PaintingCost paintingCost)
         {
@@ -87,8 +105,8 @@ namespace BeenFieldAPI.Controllers
             return -1;
         }
 
-        // DELETE: api/PaintingCosts/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("{id}")]
         public bool DeletePaintingCost(int id)
         {
            if(this.GetPaintingCost(id) != null)

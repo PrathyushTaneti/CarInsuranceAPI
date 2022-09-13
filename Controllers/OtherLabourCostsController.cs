@@ -10,7 +10,7 @@ using PetaPoco;
 
 namespace BeenFieldAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("API/[controller]")]
     [ApiController]
     public class OtherLabourCostsController : ControllerBase
     {
@@ -21,7 +21,6 @@ namespace BeenFieldAPI.Controllers
             dbContext = new Database("Server = .\\SQLEXPRESS; " + "Database = EstimationModelDb; Trusted_Connection = True; " + "TrustServerCertificate = True; ", "System.Data.SqlClient"); 
         }
 
-        // GET: api/OtherLabourCosts
         [HttpGet]
         public List<OtherLabourCost> GetOtherLabourCosts()
         {
@@ -35,8 +34,8 @@ namespace BeenFieldAPI.Controllers
             }
         }
 
-        // GET: api/OtherLabourCosts/5
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("{id}")]
         public OtherLabourCost GetOtherLabourCost(int id)
         {
             try
@@ -49,8 +48,8 @@ namespace BeenFieldAPI.Controllers
             }
         }
 
-        // PUT: api/OtherLabourCosts/5
-        [HttpPut("{id}")]
+        [HttpPut]
+        [Route("{id}")]
         public bool PutOtherLabourCost(int id, OtherLabourCost otherLabourCost)
         {
             if (id == otherLabourCost.Id)
@@ -68,7 +67,6 @@ namespace BeenFieldAPI.Controllers
             return false;
         }
 
-        // POST: api/OtherLabourCosts
         [HttpPost]
         public int PostOtherLabourCost(OtherLabourCost otherLabourCost)
         {
@@ -87,8 +85,8 @@ namespace BeenFieldAPI.Controllers
             return -1;
         }
 
-        // DELETE: api/OtherLabourCosts/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("{id}")]
         public bool DeleteOtherLabourCost(int id)
         {
             if(this.GetOtherLabourCost(id) != null)
